@@ -569,35 +569,11 @@
     s.Graduacao = dados.Graduacao; s.Prefixo = dados.Prefixo;
     saveStore(s);
 
-    // Salva carga localmente (sem linha ainda)
-    var cargaSalva = Object.assign({}, dados, { linhaDescarga: null });
-    try { localStorage.setItem('cipgd_carga_4rodas', JSON.stringify(cargaSalva)); } catch(e) {}
+    // Salva carga ativa para descarga posterior
+    try { localStorage.setItem('cipgd_carga_4rodas', JSON.stringify(dados)); } catch(e) {}
 
-    // Envia carga e salva número da linha retornado pelo script
-    var SHEET_URL_4R = 'https://script.google.com/macros/s/AKfycbw5AkFln4F18me-S32jrq6AJVamCzoz_JVDvQwYJFbkIRjgmRDWrLkUcOea0bQjOjdv/exec';
-    (function enviarCarga() {
-      if (!navigator.onLine) {
-        showToast('📶 Sem conexão — salvo localmente. Abra com internet para registrar na planilha.');
-        return;
-      }
-      var fd = new FormData();
-      for (var k in dados) fd.append(k, dados[k]);
-      fetch(SHEET_URL_4R, { method: 'POST', body: fd })
-        .then(function(r) { return r.text(); })
-        .then(function(resp) {
-          // Resposta esperada: "LINHA:47"
-          var match = resp.match(/LINHA:(\d+)/);
-          if (match) {
-            var salvo = JSON.parse(localStorage.getItem('cipgd_carga_4rodas') || '{}');
-            salvo.linhaDescarga = parseInt(match[1]);
-            try { localStorage.setItem('cipgd_carga_4rodas', JSON.stringify(salvo)); } catch(e) {}
-          }
-          showToast('✅ Registrado na planilha com sucesso!');
-        })
-        .catch(function() {
-          showToast('📶 Erro ao enviar — tente novamente com internet.');
-        });
-    })();
+    // Envia para planilha
+    enviarOuEnfileirar(dados, 'cipgd_4rodas_queue', 'https://script.google.com/macros/s/AKfycbw5AkFln4F18me-S32jrq6AJVamCzoz_JVDvQwYJFbkIRjgmRDWrLkUcOea0bQjOjdv/exec');
 
     // Monta mensagem WhatsApp
     function st(v) {

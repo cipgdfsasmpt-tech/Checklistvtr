@@ -561,13 +561,13 @@
     var kmFinal  = kmInput.value;
 
     // Monta payload para planilha
-    var payload = {
+    // Envia todos os dados da carga + campos da descarga
+    // O script vai buscar a linha pelo Cadastro+KmInicial+Prefixo e reescrever tudo
+    var payload = Object.assign({}, carga, {
       Tipo:             'DESCARGA',
-      Linha:            carga.linhaDescarga || '',
-      Prefixo:          carga.Prefixo,
       DataHoraDescarga: dataDesc,
       Km_final:         kmFinal
-    };
+    });
 
     enviarOuEnfileirar(payload, 'cipgd_4rodas_desc_queue', 'https://script.google.com/macros/s/AKfycbw5AkFln4F18me-S32jrq6AJVamCzoz_JVDvQwYJFbkIRjgmRDWrLkUcOea0bQjOjdv/exec');
 

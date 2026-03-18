@@ -529,13 +529,13 @@
     var dataDesc = document.getElementById('DataHoraDescarga').value;
     var kmFinal  = kmInput.value;
 
-    var payload = {
+    // Envia todos os dados da carga + campos da descarga
+    // O script vai buscar a linha pelo Cadastro+KmInicial+Prefixo e reescrever tudo
+    var payload = Object.assign({}, carga, {
       Tipo:             'DESCARGA',
-      Linha:            carga.linhaDescarga || '',
-      Prefixo:          carga.Prefixo,
       DataHoraDescarga: dataDesc,
       Km_final:         kmFinal
-    };
+    });
 
     enviarOuEnfileirar(payload, 'cipgd_2rodas_desc_queue', 'https://script.google.com/macros/s/AKfycbwJRY1wLA5_KLa2yPh2rh66d5mV_5kqlD5YwxsEywgeJQOuFhqnWDolvmmvfNWVs_rn/exec');
 

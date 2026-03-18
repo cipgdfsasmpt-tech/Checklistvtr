@@ -455,35 +455,11 @@
     s.Graduacao = dados.Graduacao; s.Prefixo = dados.Prefixo;
     saveStore(s);
 
-    // Salva carga localmente (sem linha ainda)
-    var cargaSalva = Object.assign({}, dados, { linhaDescarga: null });
-    try { localStorage.setItem('cipgd_carga_2rodas', JSON.stringify(cargaSalva)); } catch(e) {}
+    // Salva carga ativa para descarga posterior
+    try { localStorage.setItem('cipgd_carga_2rodas', JSON.stringify(dados)); } catch(e) {}
 
-    // Envia carga e salva número da linha retornado pelo script
-    var SHEET_URL_2R = 'https://script.google.com/macros/s/AKfycbwJRY1wLA5_KLa2yPh2rh66d5mV_5kqlD5YwxsEywgeJQOuFhqnWDolvmmvfNWVs_rn/exec';
-    (function enviarCarga() {
-      if (!navigator.onLine) {
-        showToast('📶 Sem conexão — salvo localmente. Abra com internet para registrar na planilha.');
-        return;
-      }
-      var fd = new FormData();
-      for (var k in dados) fd.append(k, dados[k]);
-      fetch(SHEET_URL_2R, { method: 'POST', body: fd })
-        .then(function(r) { return r.text(); })
-        .then(function(resp) {
-          // Resposta esperada: "LINHA:47"
-          var match = resp.match(/LINHA:(\d+)/);
-          if (match) {
-            var salvo = JSON.parse(localStorage.getItem('cipgd_carga_2rodas') || '{}');
-            salvo.linhaDescarga = parseInt(match[1]);
-            try { localStorage.setItem('cipgd_carga_2rodas', JSON.stringify(salvo)); } catch(e) {}
-          }
-          showToast('✅ Registrado na planilha com sucesso!');
-        })
-        .catch(function() {
-          showToast('📶 Erro ao enviar — tente novamente com internet.');
-        });
-    })();
+    // Envia para planilha
+    enviarOuEnfileirar(dados, 'cipgd_2rodas_queue', 'https://script.google.com/macros/s/AKfycbwJRY1wLA5_KLa2yPh2rh66d5mV_5kqlD5YwxsEywgeJQOuFhqnWDolvmmvfNWVs_rn/exec');
 
     function st(v) {
       return ['OK','Sem Vazamento','Cheio','3/4','2/4'].indexOf(v) >= 0 ? '✅ ' + v : '❌ ' + v;

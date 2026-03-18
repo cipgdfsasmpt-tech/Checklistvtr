@@ -561,14 +561,13 @@
     var kmFinal  = kmInput.value;
 
     // Monta payload para planilha
-    var payload = Object.assign({}, carga, {
-      Tipo:            'DESCARGA',
+    var payload = {
+      Tipo:             'DESCARGA',
+      Prefixo:          carga.Prefixo,
       DataHoraDescarga: dataDesc,
-      Km_final:        kmFinal,
-      KmRodados:       (parseInt(kmFinal) - parseInt(carga.Km_inicial || 0)).toString()
-    });
+      Km_final:         kmFinal
+    };
 
-    // Envia para planilha (mesma sheet, com coluna Tipo = DESCARGA)
     enviarOuEnfileirar(payload, 'cipgd_4rodas_desc_queue', 'https://script.google.com/macros/s/AKfycbw5AkFln4F18me-S32jrq6AJVamCzoz_JVDvQwYJFbkIRjgmRDWrLkUcOea0bQjOjdv/exec');
 
     // Monta mensagem WhatsApp
@@ -614,15 +613,19 @@
     }
     L.push(''); L.push(SEP);
 
-    var url = 'https://wa.me/?text=' + encodeURIComponent(L.join('\n'));
-    if (isIphone) window.location.href = url;
-    else window.open(url, '_blank');
+    var url = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(L.join('\n'));
 
-    // Remove carga ativa após descarga bem montada
+    // Remove carga ativa ANTES de abrir WhatsApp
     try { localStorage.removeItem('cipgd_carga_4rodas'); } catch(e) {}
 
-    // Volta para home após pequeno delay
-    setTimeout(function() { window.location.href = 'index.html'; }, 800);
+    if (isIphone) {
+      // iPhone: abre WhatsApp e volta para home quando o usuário retornar
+      window.location.href = url;
+    } else {
+      // Android: abre WhatsApp em nova janela e redireciona após delay
+      window.open(url, '_blank');
+      setTimeout(function() { window.location.href = 'index.html'; }, 1200);
+    }
   });
 </script>
 <script src="offline-queue.js"></script>

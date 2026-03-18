@@ -529,12 +529,12 @@
     var dataDesc = document.getElementById('DataHoraDescarga').value;
     var kmFinal  = kmInput.value;
 
-    var payload = Object.assign({}, carga, {
+    var payload = {
       Tipo:             'DESCARGA',
+      Prefixo:          carga.Prefixo,
       DataHoraDescarga: dataDesc,
-      Km_final:         kmFinal,
-      KmRodados:        (parseInt(kmFinal) - parseInt(carga.KmInicial || 0)).toString()
-    });
+      Km_final:         kmFinal
+    };
 
     enviarOuEnfileirar(payload, 'cipgd_2rodas_desc_queue', 'https://script.google.com/macros/s/AKfycbwJRY1wLA5_KLa2yPh2rh66d5mV_5kqlD5YwxsEywgeJQOuFhqnWDolvmmvfNWVs_rn/exec');
 
@@ -580,11 +580,19 @@
     L.push(''); L.push(SEP);
 
     var url = 'https://wa.me/?text=' + encodeURIComponent(L.join('\n'));
-    if (isIphone) window.location.href = url;
-    else window.open(url, '_blank');
 
+    // Remove carga ativa ANTES de abrir WhatsApp
     try { localStorage.removeItem('cipgd_carga_2rodas'); } catch(e) {}
-    setTimeout(function() { window.location.href = 'index.html'; }, 800);
+
+    if (isIphone) {
+      // iPhone: abre WhatsApp e volta para home quando o usuário retornar
+      window.location.href = url;
+      // Não usar setTimeout — o location.href já vai sair desta página
+    } else {
+      // Android: abre WhatsApp em nova janela e redireciona após delay
+      window.open(url, '_blank');
+      setTimeout(function() { window.location.href = 'index.html'; }, 1200);
+    }
   });
 </script>
 <script src="offline-queue.js"></script>

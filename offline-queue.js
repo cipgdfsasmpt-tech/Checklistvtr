@@ -1,10 +1,10 @@
 // ── FILA OFFLINE — CIPGd-FSA v1.4 ──────────────────────────────────────────
 
 const QUEUES = {
-  'cipgd_4rodas_queue':      'https://script.google.com/macros/s/AKfycbw5AkFln4F18me-S32jrq6AJVamCzoz_JVDvQwYJFbkIRjgmRDWrLkUcOea0bQjOjdv/exec',
-  'cipgd_2rodas_queue':      'https://script.google.com/macros/s/AKfycbwJRY1wLA5_KLa2yPh2rh66d5mV_5kqlD5YwxsEywgeJQOuFhqnWDolvmmvfNWVs_rn/exec',
-  'cipgd_4rodas_desc_queue': 'https://script.google.com/macros/s/AKfycbw5AkFln4F18me-S32jrq6AJVamCzoz_JVDvQwYJFbkIRjgmRDWrLkUcOea0bQjOjdv/exec',
-  'cipgd_2rodas_desc_queue': 'https://script.google.com/macros/s/AKfycbwJRY1wLA5_KLa2yPh2rh66d5mV_5kqlD5YwxsEywgeJQOuFhqnWDolvmmvfNWVs_rn/exec'
+  'cipgd_4rodas_queue':      'https://script.google.com/macros/s/AKfycbwsp6t508FEeSvW4ghJMs0xNR0kfnbO9czE6g6JnB1K5MCf4Vu1-J2bW9rsDU3UMlW6/exec',
+  'cipgd_2rodas_queue':      'https://script.google.com/macros/s/AKfycbxcdbxeo6OhC9VM2zaYhiZCYWTDsOBqtjdDSCEKmcz0tZQm47J_lC2N0-xCgXPIkUbC/exec',
+  'cipgd_4rodas_desc_queue': 'https://script.google.com/macros/s/AKfycbwsp6t508FEeSvW4ghJMs0xNR0kfnbO9czE6g6JnB1K5MCf4Vu1-J2bW9rsDU3UMlW6/exec',
+  'cipgd_2rodas_desc_queue': 'https://script.google.com/macros/s/AKfycbxcdbxeo6OhC9VM2zaYhiZCYWTDsOBqtjdDSCEKmcz0tZQm47J_lC2N0-xCgXPIkUbC/exec'
 };
 
 // ── IndexedDB helpers ────────────────────────────────────────────────────────

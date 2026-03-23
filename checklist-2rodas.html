@@ -459,7 +459,7 @@
     try { localStorage.setItem('cipgd_carga_2rodas', JSON.stringify(dados)); } catch(e) {}
 
     // Envia para planilha
-    enviarOuEnfileirar(dados, 'cipgd_2rodas_queue', 'https://script.google.com/macros/s/AKfycbwJRY1wLA5_KLa2yPh2rh66d5mV_5kqlD5YwxsEywgeJQOuFhqnWDolvmmvfNWVs_rn/exec');
+    enviarOuEnfileirar(dados, 'cipgd_2rodas_queue', 'https://script.google.com/macros/s/AKfycbxcdbxeo6OhC9VM2zaYhiZCYWTDsOBqtjdDSCEKmcz0tZQm47J_lC2N0-xCgXPIkUbC/exec');
 
     function st(v) {
       return ['OK','Sem Vazamento','Cheio','3/4','2/4'].indexOf(v) >= 0 ? '✅ ' + v : '❌ ' + v;

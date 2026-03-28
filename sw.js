@@ -69,7 +69,7 @@ self.addEventListener('sync', e => {
 async function syncAll() {
   await processQueue(
     'cipgd_4rodas_queue',
-    'https://script.google.com/macros/s/AKfycbw5AkFln4F18me-S32jrq6AJVamCzoz_JVDvQwYJFbkIRjgmRDWrLkUcOea0bQjOjdv/exec'
+    'https://script.google.com/macros/s/AKfycbxbw-QVtbVAIwit-5Gc1HNq_8qTeMp-IcR8hmEBqPlCApAo6xC11Maa5WPdp5QlHUGPiA/exec'
   );
   await processQueue(
     'cipgd_2rodas_queue',

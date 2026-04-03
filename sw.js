@@ -1,14 +1,19 @@
-// ── SERVICE WORKER — CIPGd-FSA v1.9 ─────────────────────────────────────────
-const CACHE = 'cipgd-v1.9';
+// ── SERVICE WORKER — CIPGd-FSA v2.0 ─────────────────────────────────────────
+// Carrega config central — URLs do Apps Script ficam APENAS em config.js
+importScripts('./config.js');
+
+const CACHE = 'cipgd-v2.0';
 
 const ASSETS = [
   './',
+  './config.js',
   './index.html',
   './checklist-4rodas.html',
   './checklist-2rodas.html',
   './descarga-4rodas.html',
   './descarga-2rodas.html',
   './manifest.json',
+  './config.js',
   './offline-queue.js',
   './theme.js',
   './icon-192.png',
@@ -67,14 +72,19 @@ self.addEventListener('sync', e => {
 });
 
 async function syncAll() {
-  await processQueue(
-    'cipgd_4rodas_queue',
-    'https://script.google.com/macros/s/AKfycbxbw-QVtbVAIwit-5Gc1HNq_8qTeMp-IcR8hmEBqPlCApAo6xC11Maa5WPdp5QlHUGPiA/exec'
-  );
-  await processQueue(
-    'cipgd_2rodas_queue',
-    'https://script.google.com/macros/s/AKfycbwJRY1wLA5_KLa2yPh2rh66d5mV_5kqlD5YwxsEywgeJQOuFhqnWDolvmmvfNWVs_rn/exec'
-  );
+  // Lê as URLs atuais do IndexedDB — gravadas pelo offline-queue.js ao abrir o app
+  // Isso garante que uma troca de URL no Apps Script nunca trave a fila
+  const urls = await idbGet('cipgd_urls') || {};
+
+  const url4R  = urls['cipgd_4rodas_queue']      || urls._fallback4R || '';
+  const url2R  = urls['cipgd_2rodas_queue']       || urls._fallback2R || '';
+  const url4RD = urls['cipgd_4rodas_desc_queue']  || url4R;
+  const url2RD = urls['cipgd_2rodas_desc_queue']  || url2R;
+
+  if (url4R)  await processQueue('cipgd_4rodas_queue',      url4R);
+  if (url2R)  await processQueue('cipgd_2rodas_queue',      url2R);
+  if (url4RD) await processQueue('cipgd_4rodas_desc_queue', url4RD);
+  if (url2RD) await processQueue('cipgd_2rodas_desc_queue', url2RD);
 }
 
 async function processQueue(queueKey, sheetUrl) {

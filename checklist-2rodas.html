@@ -148,7 +148,7 @@
 <body>
 
 <div class="topbar">
-  <a class="btn-back" href="index.html">&#8249;</a>
+  <a class="btn-back" href="javascript:history.back()">&#8249;</a>
   <div class="topbar-title">
     <div class="topbar-badge">2 Rodas</div>
     <div class="topbar-name">Viatura Motocicleta</div>
@@ -459,7 +459,7 @@
     try { localStorage.setItem('cipgd_carga_2rodas', JSON.stringify(dados)); } catch(e) {}
 
     // Envia para planilha
-    enviarOuEnfileirar(dados, 'cipgd_2rodas_queue', 'https://script.google.com/macros/s/AKfycbxcdbxeo6OhC9VM2zaYhiZCYWTDsOBqtjdDSCEKmcz0tZQm47J_lC2N0-xCgXPIkUbC/exec');
+    enviarOuEnfileirar(dados, 'cipgd_2rodas_queue', CIPGD_CONFIG.URL_2RODAS);
 
     function st(v) {
       return ['OK','Sem Vazamento','Cheio','3/4','2/4'].indexOf(v) >= 0 ? '✅ ' + v : '❌ ' + v;
@@ -494,9 +494,10 @@
     L.push(''); L.push(SEP);
     var url = 'https://wa.me/?text=' + encodeURIComponent(L.join('\n'));
     if (isIphone) window.location.href = url;
-    else window.open(url, '_blank');
+    else { window.open(url, '_blank'); setTimeout(function(){ history.back(); }, 1200); }
   });
 </script>
-<script src="offline-queue.js"></script>
+<script src="config.js"></script>
+  <script src="offline-queue.js"></script>
 </body>
 </html>

@@ -1,10 +1,11 @@
 // ── FILA OFFLINE — CIPGd-FSA v1.4 ──────────────────────────────────────────
 
+// URLs lidas do config.js — não edite aqui
 const QUEUES = {
-  'cipgd_4rodas_queue':      'https://script.google.com/macros/s/AKfycbxbw-QVtbVAIwit-5Gc1HNq_8qTeMp-IcR8hmEBqPlCApAo6xC11Maa5WPdp5QlHUGPiA/exec',
-  'cipgd_2rodas_queue':      'https://script.google.com/macros/s/AKfycbxcdbxeo6OhC9VM2zaYhiZCYWTDsOBqtjdDSCEKmcz0tZQm47J_lC2N0-xCgXPIkUbC/exec',
-  'cipgd_4rodas_desc_queue': 'https://script.google.com/macros/s/AKfycbxbw-QVtbVAIwit-5Gc1HNq_8qTeMp-IcR8hmEBqPlCApAo6xC11Maa5WPdp5QlHUGPiA/exec',
-  'cipgd_2rodas_desc_queue': 'https://script.google.com/macros/s/AKfycbxcdbxeo6OhC9VM2zaYhiZCYWTDsOBqtjdDSCEKmcz0tZQm47J_lC2N0-xCgXPIkUbC/exec'
+  'cipgd_4rodas_queue':      CIPGD_CONFIG.URL_4RODAS,
+  'cipgd_2rodas_queue':      CIPGD_CONFIG.URL_2RODAS,
+  'cipgd_4rodas_desc_queue': CIPGD_CONFIG.URL_4RODAS,
+  'cipgd_2rodas_desc_queue': CIPGD_CONFIG.URL_2RODAS
 };
 
 // ── IndexedDB helpers ────────────────────────────────────────────────────────
@@ -255,6 +256,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Indicador de conexão
   atualizarIndicadorConexao();
 
+  // ── Gravar URLs atuais no IndexedDB para o Service Worker usar ──────────
+  // Sempre que o app abre, persiste as URLs do objeto QUEUES no IDB.
+  // O SW lê daqui — assim uma troca de URL no Apps Script propaga
+  // automaticamente para o Background Sync do Android.
+  await sincronizarUrls();
+
   // Verifica pendentes ao abrir (cobre iPhone com app fechado)
   const total = await contarPendentes();
   if (total > 0) {
@@ -271,6 +278,36 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 });
+
+// ── Sincroniza as URLs do QUEUES para o IndexedDB ────────────────────────
+// Chamado ao abrir o app. Garante que o SW sempre use a URL mais recente.
+// Também migra itens da fila que tenham URL antiga gravada junto ao payload.
+async function sincronizarUrls() {
+  try {
+    // Salva o mapa atual de URLs para o SW usar no Background Sync
+    await idbSet('cipgd_urls', QUEUES);
+
+    // Migrar filas: se algum item tiver _url diferente da atual, atualiza
+    for (const [queueKey, urlAtual] of Object.entries(QUEUES)) {
+      const fila = await idbGet(queueKey) || [];
+      if (!fila.length) continue;
+      let alterou = false;
+      const filaMigrada = fila.map(item => {
+        if (item._url && item._url !== urlAtual) {
+          alterou = true;
+          return { ...item, _url: urlAtual };
+        }
+        return item;
+      });
+      if (alterou) {
+        await idbSet(queueKey, filaMigrada);
+        console.log('[CIPGd] URL migrada na fila ' + queueKey);
+      }
+    }
+  } catch(e) {
+    console.warn('[CIPGd] sincronizarUrls:', e);
+  }
+}
 
 // ── Eventos de conexão ───────────────────────────────────────────────────────
 window.addEventListener('online', async () => {

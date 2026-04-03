@@ -279,7 +279,7 @@
 
 <!-- TOP BAR -->
 <div class="topbar">
-  <a class="btn-back" href="index.html">&#8249;</a>
+  <a class="btn-back" href="javascript:history.back()">&#8249;</a>
   <div class="topbar-title">
     <div class="topbar-badge">Descarga · 4 Rodas</div>
     <div class="topbar-name">Viatura Automotiva</div>
@@ -466,7 +466,7 @@
   if (!carga || !carga.Prefixo) {
     // Sem carga ativa — redireciona
     alert('Nenhuma carga ativa encontrada para 4 Rodas. Faça o checklist primeiro.');
-    window.location.href = 'index.html';
+    history.back();
   }
 
   // ── HELPER: status badge ─────────────────────────────────────────────────
@@ -569,7 +569,7 @@
       Km_final:         kmFinal
     });
 
-    enviarOuEnfileirar(payload, 'cipgd_4rodas_desc_queue', 'https://script.google.com/macros/s/AKfycbxbw-QVtbVAIwit-5Gc1HNq_8qTeMp-IcR8hmEBqPlCApAo6xC11Maa5WPdp5QlHUGPiA/exec');
+    enviarOuEnfileirar(payload, 'cipgd_4rodas_desc_queue', CIPGD_CONFIG.URL_4RODAS);
 
     // Monta mensagem WhatsApp
     function st(v) {
@@ -620,15 +620,16 @@
     try { localStorage.removeItem('cipgd_carga_4rodas'); } catch(e) {}
 
     if (isIphone) {
-      // iPhone: abre WhatsApp e volta para home quando o usuário retornar
+      // iPhone: abre WhatsApp — ao retornar o history.back() do pageshow cuida
       window.location.href = url;
     } else {
-      // Android: abre WhatsApp em nova janela e redireciona após delay
+      // Android: abre WhatsApp e volta com history.back()
       window.open(url, '_blank');
-      setTimeout(function() { window.location.href = 'index.html'; }, 1200);
+      setTimeout(function() { history.back(); }, 1200);
     }
   });
 </script>
-<script src="offline-queue.js"></script>
+<script src="config.js"></script>
+  <script src="offline-queue.js"></script>
 </body>
 </html>

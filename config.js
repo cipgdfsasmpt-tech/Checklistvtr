@@ -5,6 +5,6 @@
 // ═══════════════════════════════════════════════════════════════════════════
 
 const CIPGD_CONFIG = {
-  URL_4RODAS: 'https://script.google.com/macros/s/AKfycbyiHrPSYc6HqysK2PCwWlzcvW7CsjnALjNdlgvEFYa6zsi1Jam8bFywENYJiLAA0dEMxw/exec',
-  URL_2RODAS: 'https://script.google.com/macros/s/AKfycbyuDYSzGmTfmBctEclx4BVIYuGkFNxjY7nBEjNF7fyOjLRPZHcL2XxP0e6C0wZ0L1DNjA/exec'
+  URL_4RODAS: 'https://script.google.com/macros/s/AKfycbxGh7SfJU2rQusk6vyDWI6GwQObfLoaM3xWlzCZHksDKs28xiV8SzI9JCtZXfzylrg9Lg/exec',
+  URL_2RODAS: ''https://script.google.com/macros/s/AKfycbxXnITA3Mk2VmiX9Vfc2dcp977q934wTmQC4g5iFiF8Hi3HwzgyCCsbO2Kxd0BMuufOGw/exec
 };

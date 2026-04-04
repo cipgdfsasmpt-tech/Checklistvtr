@@ -347,6 +347,25 @@
 
 <script>
   document.getElementById('DataHora').value = new Date().toLocaleString('pt-BR');
+
+  // ── PROTEÇÃO ANTI-DUPLICATA ─────────────────────────────────────────────
+  // Gera chave única para este envio. Se já enviado nos últimos 60s, bloqueia.
+  function jaEnviado(chave) {
+    try {
+      var reg = JSON.parse(localStorage.getItem('cipgd_enviados') || '{}');
+      var agora = Date.now();
+      // Limpar entradas com mais de 60 segundos
+      Object.keys(reg).forEach(function(k) { if (agora - reg[k] > 60000) delete reg[k]; });
+      if (reg[chave]) {
+        localStorage.setItem('cipgd_enviados', JSON.stringify(reg));
+        return true; // já enviado
+      }
+      reg[chave] = agora;
+      localStorage.setItem('cipgd_enviados', JSON.stringify(reg));
+      return false;
+    } catch(e) { return false; }
+  }
+
   var isIphone = /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
   var STORE_KEY = 'cipgd_2rodas_v1';
@@ -459,6 +478,14 @@
     try { localStorage.setItem('cipgd_carga_2rodas', JSON.stringify(dados)); } catch(e) {}
 
     // Envia para planilha
+
+    var _chaveEnvio = 'carga2R_' + (dados.Prefixo||'') + '_' + (dados.KmInicial||'') + '_' + (dados.DataHora||'');
+    if (jaEnviado(_chaveEnvio)) {
+      showToast('⚠️ Este checklist já foi enviado. Evitando duplicata.');
+      if (btn) { btn.disabled = false; btn.style.opacity = '1'; }
+      return;
+    }
+
     enviarOuEnfileirar(dados, 'cipgd_2rodas_queue', CIPGD_CONFIG.URL_2RODAS);
 
     function st(v) {
@@ -492,9 +519,12 @@
       dados.Observacoes.trim().split('\n').forEach(function(l) { if (l.trim()) L.push('. ' + l.trim()); });
     }
     L.push(''); L.push(SEP);
-   var url = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(L.join('\n'));
-    if (isIphone) window.location.href = url;
-    else { window.open(url, '_blank'); setTimeout(function(){ history.back(); }, 1200); }
+    var waText = encodeURIComponent(L.join('\n'));
+    var url = isIphone
+      ? 'whatsapp://send?text=' + waText
+      : 'https://api.whatsapp.com/send?text=' + waText;
+    if (isIphone) { window.location.href = url; }
+    else { window.open(url, '_blank'); setTimeout(function(){ window.location.replace('./index.html'); }, 1200); }
   });
 </script>
 <script src="config.js"></script>

@@ -1,8 +1,8 @@
-// ── SERVICE WORKER — CIPGd-FSA v2.0 ─────────────────────────────────────────
-// Carrega config central — URLs do Apps Script ficam APENAS em config.js
+// ── SERVICE WORKER — CIPGd-FSA v2.1 ─────────────────────────────────────────
+// Carrega config central — VERSAO, CACHE e URLs vêm de config.js
 importScripts('./config.js');
 
-const CACHE = 'cipgd-v2.0';
+const CACHE = CIPGD_CONFIG.CACHE; // definido em config.js
 
 const ASSETS = [
   './',

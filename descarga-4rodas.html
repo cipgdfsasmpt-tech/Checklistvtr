@@ -38,6 +38,7 @@
       pointer-events: none; z-index: 0;
     }
 
+    /* ── TOP BAR ── */
     .topbar {
       position: sticky; top: 0; z-index: 100;
       background: var(--topbar-bg);
@@ -76,12 +77,14 @@
       color: var(--topbar-name); line-height: 1.1;
     }
 
+    /* ── CONTAINER ── */
     .container {
       max-width: 640px; margin: 0 auto;
       padding: 1.25rem 1rem 2rem;
       position: relative; z-index: 1;
     }
 
+    /* ── BANNER DESCARGA ── */
     .banner-descarga {
       background: linear-gradient(135deg, rgba(34,197,94,.12), rgba(34,197,94,.04));
       border: 1px solid rgba(34,197,94,.35);
@@ -103,6 +106,7 @@
       font-size: .75rem; color: var(--muted); line-height: 1.4;
     }
 
+    /* ── SECTIONS ── */
     .section {
       background: var(--panel);
       border: 1px solid var(--border);
@@ -153,6 +157,7 @@
       display: grid; grid-template-columns: 1fr 1fr; gap: .9rem;
     }
     .sec-body.single { grid-template-columns: 1fr; }
+
     .field { display: flex; flex-direction: column; gap: .3rem; }
     .field.full { grid-column: 1 / -1; }
 
@@ -162,6 +167,7 @@
       color: var(--muted);
     }
 
+    /* Campos somente leitura da carga */
     .val-readonly {
       background: var(--input-bg);
       border: 1px solid var(--border);
@@ -177,6 +183,7 @@
     }
     .val-readonly.accent { color: var(--accent); font-size: .82rem; }
 
+    /* Badge de status dos itens */
     .status-badge {
       display: inline-flex; align-items: center; gap: .35rem;
       padding: .45rem .75rem;
@@ -188,12 +195,14 @@
     .status-badge.ok  { background: rgba(34,197,94,.1);  border: 1px solid rgba(34,197,94,.3);  color: var(--green); }
     .status-badge.bad { background: rgba(239,68,68,.1);  border: 1px solid rgba(239,68,68,.3);  color: var(--red);   }
 
+    /* Check grid */
     .check-grid {
       padding: 1.1rem;
       display: grid; grid-template-columns: 1fr 1fr; gap: .8rem;
     }
     .check-item { display: flex; flex-direction: column; gap: .3rem; }
 
+    /* ── CAMPOS DE DESCARGA (editáveis) ── */
     input, select, textarea {
       background: var(--input-bg);
       border: 1px solid var(--border);
@@ -226,6 +235,7 @@
     .error-msg { font-size: .71rem; color: var(--red); margin-top: .2rem; display: none; }
     .error-msg.show { display: block; }
 
+    /* ── OBS CARGA ── */
     .obs-carga {
       background: var(--input-bg);
       border: 1px solid var(--border);
@@ -239,6 +249,7 @@
       font-style: italic;
     }
 
+    /* ── SUBMIT ── */
     .submit-wrap { margin-top: 1.25rem; animation: fadeUp .4s .3s ease both; }
     .btn-submit {
       width: 100%;
@@ -266,6 +277,7 @@
 </head>
 <body>
 
+<!-- TOP BAR -->
 <div class="topbar">
   <a class="btn-back" href="javascript:history.back()">&#8249;</a>
   <div class="topbar-title">
@@ -277,6 +289,7 @@
 
 <div class="container">
 
+  <!-- Banner informativo -->
   <div class="banner-descarga">
     <div class="banner-descarga-icon">🔑</div>
     <div class="banner-descarga-text">
@@ -285,7 +298,7 @@
     </div>
   </div>
 
-  <!-- IDENTIFICAÇÃO -->
+  <!-- IDENTIFICAÇÃO (somente leitura) -->
   <div class="section">
     <div class="sec-header">
       <div class="sec-icon">👤</div>
@@ -316,7 +329,7 @@
     </div>
   </div>
 
-  <!-- VIATURA -->
+  <!-- VIATURA (somente leitura) -->
   <div class="section">
     <div class="sec-header">
       <div class="sec-icon">🚓</div>
@@ -335,7 +348,7 @@
     </div>
   </div>
 
-  <!-- FLUIDOS -->
+  <!-- FLUIDOS (somente leitura) -->
   <div class="section">
     <div class="sec-header">
       <div class="sec-icon">🛢️</div>
@@ -362,7 +375,7 @@
     </div>
   </div>
 
-  <!-- ESTRUTURA -->
+  <!-- ESTRUTURA (somente leitura) -->
   <div class="section">
     <div class="sec-header">
       <div class="sec-icon">🔧</div>
@@ -401,7 +414,7 @@
     </div>
   </div>
 
-  <!-- OBSERVAÇÕES DA CARGA -->
+  <!-- OBSERVAÇÕES DA CARGA (somente leitura, só aparece se houver) -->
   <div class="section" id="sec-obs-carga" style="display:none">
     <div class="sec-header">
       <div class="sec-icon">📝</div>
@@ -415,7 +428,7 @@
     </div>
   </div>
 
-  <!-- DESCARGA: campos editáveis -->
+  <!-- ── DESCARGA: campos editáveis ── -->
   <div class="section" style="border-color: rgba(34,197,94,.35);">
     <div class="sec-header" style="background: rgba(34,197,94,.06); border-color: rgba(34,197,94,.2);">
       <div class="sec-icon green">🔑</div>
@@ -434,25 +447,43 @@
     </div>
   </div>
 
+  <!-- BOTÃO ENVIAR -->
   <div class="submit-wrap">
     <button type="button" class="btn-submit" id="btn-enviar">
       <span>📲</span> Enviar Descarga via WhatsApp
     </button>
   </div>
 
-</div>
+</div><!-- /container -->
 
 <script>
+
+  // ── PROTEÇÃO ANTI-DUPLICATA ─────────────────────────────────────────────
+  function jaEnviado(chave) {
+    try {
+      var reg = JSON.parse(localStorage.getItem('cipgd_enviados') || '{}');
+      var agora = Date.now();
+      Object.keys(reg).forEach(function(k) { if (agora - reg[k] > 60000) delete reg[k]; });
+      if (reg[chave]) { localStorage.setItem('cipgd_enviados', JSON.stringify(reg)); return true; }
+      reg[chave] = agora;
+      localStorage.setItem('cipgd_enviados', JSON.stringify(reg));
+      return false;
+    } catch(e) { return false; }
+  }
+
   var isIphone = /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
+  // ── CARREGA DADOS DA CARGA ───────────────────────────────────────────────
   var carga = null;
   try { carga = JSON.parse(localStorage.getItem('cipgd_carga_4rodas')); } catch(e) {}
 
   if (!carga || !carga.Prefixo) {
+    // Sem carga ativa — redireciona
     alert('Nenhuma carga ativa encontrada para 4 Rodas. Faça o checklist primeiro.');
     history.back();
   }
 
+  // ── HELPER: status badge ─────────────────────────────────────────────────
   var OK_VALS = ['OK','Cheio','3/4','2/4'];
   function setBadge(id, val) {
     var el = document.getElementById(id);
@@ -467,6 +498,7 @@
     if (el) el.textContent = val || '—';
   }
 
+  // ── PREENCHE CAMPOS SOMENTE LEITURA ─────────────────────────────────────
   if (carga) {
     setVal('v_DataHora',    carga.DataHora);
     setVal('v_Nome',        carga.Nome);
@@ -494,14 +526,17 @@
     }
   }
 
+  // ── DATA E HORA DA DESCARGA ──────────────────────────────────────────────
   document.getElementById('DataHoraDescarga').value = new Date().toLocaleString('pt-BR');
 
+  // ── VALIDAÇÃO KM FINAL ───────────────────────────────────────────────────
   var kmInput = document.getElementById('Km_final');
   var kmErr   = document.getElementById('err_Km_final');
 
   kmInput.addEventListener('input', function() {
     kmInput.classList.remove('error');
     kmErr.classList.remove('show');
+    // Só aceita números
     this.value = this.value.replace(/[^0-9]/g, '');
   });
 
@@ -529,6 +564,7 @@
     return true;
   }
 
+  // ── ENVIO ────────────────────────────────────────────────────────────────
   document.getElementById('btn-enviar').addEventListener('click', function() {
     if (!validarKm()) {
       kmInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -538,35 +574,46 @@
     var dataDesc = document.getElementById('DataHoraDescarga').value;
     var kmFinal  = kmInput.value;
 
-    // Envia todos os dados da carga + campos da descarga para a planilha
+    // Monta payload para planilha
+    // Envia todos os dados da carga + campos da descarga
+    // O script vai buscar a linha pelo Cadastro+KmInicial+Prefixo e reescrever tudo
     var payload = Object.assign({}, carga, {
       Tipo:             'DESCARGA',
       DataHoraDescarga: dataDesc,
       Km_final:         kmFinal
     });
 
+
+    var _chaveEnvio = 'desc4R_' + (carga.Prefixo||'') + '_' + (carga.Km_inicial||'') + '_' + (carga.DataHora||'');
+    if (jaEnviado(_chaveEnvio)) {
+      showToast('⚠️ Esta descarga já foi enviada. Evitando duplicata.');
+      return;
+    }
+
     enviarOuEnfileirar(payload, 'cipgd_4rodas_desc_queue', CIPGD_CONFIG.URL_4RODAS);
 
-    // --- NOVA MENSAGEM RESUMIDA PARA WHATSAPP ---
+    // Monta mensagem WhatsApp — modelo simplificado conforme solicitado
     var SEP = '━━━━━━━━━━━━━━━━━━━━';
     var kmRod = parseInt(kmFinal) - parseInt(carga.Km_inicial || 0);
-    // Formata a data com vírgula (ex: 01/04/2026, 23:57:05)
-    var dataDescFormatada = dataDesc.replace(' ', ', ');
     var L = [];
     L.push(SEP);
-    L.push('🔑 DESCARGA 4 RODAS');
-    L.push('       CIPGd-FSA');
+    L.push('🔑 *DESCARGA 4 RODAS*');
+    L.push('       *CIPGd-FSA*');
     L.push(SEP);
     L.push('');
-    L.push('📅 Descarga: ' + dataDescFormatada);
-    L.push('👤 Mot: ' + (carga.Graduacao || '') + ' ' + (carga.Nome || '').trim() + '  Mat: ' + (carga.Cadastro || '').trim());
-    L.push('📍 Viatura: ' + (carga.Prefixo || ''));
+    L.push('📅 Descarga: ' + dataDesc);
+    L.push('👤 Mot: ' + (carga.Graduacao||'') + ' *' + (carga.Nome||'').trim() + '*' + (carga.Cadastro ? '  Mat: *' + (carga.Cadastro||'').trim() + '*' : ''));
+    L.push('📍 Viatura: *' + carga.Prefixo + '*');
     L.push('');
-    L.push('📊 Km Final:    ' + kmFinal);
-    L.push('🛣️ Km Rodados:  ' + (kmRod >= 0 ? kmRod : '—') + ' km');
+    L.push('📊 Km Final:    *' + kmFinal + '*');
+    L.push('🛣️ Km Rodados:  *' + (kmRod >= 0 ? kmRod : '—') + ' km*');
     L.push(SEP);
 
-    var url = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(L.join('\n'));
+    // URL compatível com Android e iPhone
+    var waText = encodeURIComponent(L.join('\n'));
+    var url = isIphone
+      ? 'whatsapp://send?text=' + waText
+      : 'https://api.whatsapp.com/send?text=' + waText;
 
     // Remove carga ativa ANTES de abrir WhatsApp
     try { localStorage.removeItem('cipgd_carga_4rodas'); } catch(e) {}
@@ -575,11 +622,11 @@
       window.location.href = url;
     } else {
       window.open(url, '_blank');
-      setTimeout(function() { history.back(); }, 1200);
+      setTimeout(function() { window.location.replace('./index.html'); }, 1200);
     }
   });
 </script>
 <script src="config.js"></script>
-<script src="offline-queue.js"></script>
+  <script src="offline-queue.js"></script>
 </body>
 </html>

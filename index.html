@@ -337,12 +337,20 @@
   </div>
 
   <div class="footer">
-    <span>▪</span>&nbsp; Sistema de Inspeção de Viaturas &nbsp;<span>▪</span>
+    <span>▪</span>&nbsp; Sistema de Inspeção de Viaturas <span id="app-version"></span>&nbsp;<span>▪</span>
   </div>
 
 </div>
 
 <script src="config.js"></script>
+<script>
+(function() {
+  var el = document.getElementById('app-version');
+  if (el && typeof CIPGD_CONFIG !== 'undefined' && CIPGD_CONFIG.VERSAO) {
+    el.textContent = CIPGD_CONFIG.VERSAO;
+  }
+})();
+</script>
 <script src="offline-queue.js"></script>
 <script>
   // Registra Service Worker
@@ -380,6 +388,14 @@
 </script>
 
 <script src="config.js"></script>
+<script>
+(function() {
+  var el = document.getElementById('app-version');
+  if (el && typeof CIPGD_CONFIG !== 'undefined' && CIPGD_CONFIG.VERSAO) {
+    el.textContent = CIPGD_CONFIG.VERSAO;
+  }
+})();
+</script>
 <script src="offline-queue.js"></script>
 <script>
   // ── VERIFICA CARGAS ATIVAS E PENDENTES ──────────────────────────────────

@@ -529,8 +529,7 @@
     var dataDesc = document.getElementById('DataHoraDescarga').value;
     var kmFinal  = kmInput.value;
 
-    // Envia todos os dados da carga + campos da descarga
-    // O script vai buscar a linha pelo Cadastro+KmInicial+Prefixo e reescrever tudo
+    // Envia todos os dados da carga + campos da descarga para a planilha
     var payload = Object.assign({}, carga, {
       Tipo:             'DESCARGA',
       DataHoraDescarga: dataDesc,
@@ -539,63 +538,39 @@
 
     enviarOuEnfileirar(payload, 'cipgd_2rodas_desc_queue', CIPGD_CONFIG.URL_2RODAS);
 
-    function st(v) {
-      return OK_VALS.indexOf(v) >= 0 ? '✅ ' + v : '❌ ' + v;
-    }
+    // --- NOVA MENSAGEM RESUMIDA PARA WHATSAPP ---
     var SEP = '━━━━━━━━━━━━━━━━━━━━';
     var kmRod = parseInt(kmFinal) - parseInt(carga.KmInicial || 0);
+    // Formata a data com vírgula (ex: 01/04/2026, 23:57:05)
+    var dataDescFormatada = dataDesc.replace(' ', ', ');
     var L = [];
     L.push(SEP);
-    L.push('🔑 *DESCARGA 2 RODAS*');
-    L.push('       *CIPGd-FSA*');
+    L.push('🔑 DESCARGA 2 RODAS');
+    L.push('       CIPGd-FSA');
     L.push(SEP);
     L.push('');
-    L.push('📅 Carga:    ' + carga.DataHora);
-    L.push('📅 Descarga: ' + dataDesc);
-    L.push('👤 Mot: ' + carga.Graduacao + ' *' + (carga.Nome||'').trim() + '*' + (carga.Cadastro ? '  Mat: *' + (carga.Cadastro||'').trim() + '*' : ''));
-    L.push('🧑‍✈️ Cmt: ' + carga.Comandante);
-    L.push('📍 Viatura: *' + carga.Prefixo + '*');
+    L.push('📅 Descarga: ' + dataDescFormatada);
+    L.push('👤 Mot: ' + (carga.Graduacao || '') + ' ' + (carga.Nome || '').trim() + '  Mat: ' + (carga.Cadastro || '').trim());
+    L.push('📍 Viatura: ' + (carga.Prefixo || ''));
     L.push('');
-    L.push('📊 Km Inicial:  ' + carga.KmInicial);
-    L.push('📊 Km Final:    *' + kmFinal + '*');
-    L.push('🛣️ Km Rodados:  *' + (kmRod >= 0 ? kmRod : '—') + ' km*');
-    L.push('');
-    L.push('┌─ 🛢️ *FLUIDOS (na carga)*');
-    L.push('├ Nível Óleo: '    + st(carga.NivelOleo));
-    L.push('├ Vazamento: '     + st(carga.VazamentoOleo));
-    L.push('├ Combustível: '   + st(carga.NivelCombustivel));
-    L.push('└ Fluido Freio: '  + st(carga.FluidoFreio));
-    L.push('');
-    L.push('┌─ 🔧 *ESTRUTURA (na carga)*');
-    L.push('├ Pintura/Plot.: ' + st(carga.PinturaPlotagem));
-    L.push('├ Faróis/Setas: '  + st(carga.FaroisSetas));
-    L.push('├ Giroflex: '      + st(carga.Giroflex));
-    L.push('├ Estofados: '     + st(carga.Estofados));
-    L.push('├ Jante: '         + st(carga.Jante));
-    L.push('└ Pneus: '         + st(carga.Pneus));
-    if (carga.Observacoes && carga.Observacoes.trim()) {
-      L.push('');
-      L.push('📝 *OBS (carga):*');
-      carga.Observacoes.trim().split('\n').forEach(function(l) { if (l.trim()) L.push('. ' + l.trim()); });
-    }
-    L.push(''); L.push(SEP);
+    L.push('📊 Km Final:    ' + kmFinal);
+    L.push('🛣️ Km Rodados:  ' + (kmRod >= 0 ? kmRod : '—') + ' km');
+    L.push(SEP);
 
-    var url = 'https://wa.me/?text=' + encodeURIComponent(L.join('\n'));
+    var url = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(L.join('\n'));
 
     // Remove carga ativa ANTES de abrir WhatsApp
     try { localStorage.removeItem('cipgd_carga_2rodas'); } catch(e) {}
 
     if (isIphone) {
-      // iPhone: abre WhatsApp — ao retornar o history.back() do pageshow cuida
       window.location.href = url;
     } else {
-      // Android: abre WhatsApp e volta com history.back()
       window.open(url, '_blank');
       setTimeout(function() { history.back(); }, 1200);
     }
   });
 </script>
 <script src="config.js"></script>
-  <script src="offline-queue.js"></script>
+<script src="offline-queue.js"></script>
 </body>
 </html>

@@ -492,7 +492,7 @@
       dados.Observacoes.trim().split('\n').forEach(function(l) { if (l.trim()) L.push('. ' + l.trim()); });
     }
     L.push(''); L.push(SEP);
-    var url = 'https://wa.me/?text=' + encodeURIComponent(L.join('\n'));
+   var url = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(L.join('\n'));
     if (isIphone) window.location.href = url;
     else { window.open(url, '_blank'); setTimeout(function(){ history.back(); }, 1200); }
   });

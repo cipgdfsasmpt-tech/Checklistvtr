@@ -90,6 +90,9 @@ function showToast(msg, duration) {
   if (!t) {
     t = document.createElement('div');
     t.id = '_toast';
+    t.setAttribute('role', 'status');
+    t.setAttribute('aria-live', 'polite');
+    t.setAttribute('aria-atomic', 'true');
     t.style.cssText = [
       'position:fixed',
       'bottom:calc(1.5rem + env(safe-area-inset-bottom,0px))',
@@ -129,6 +132,8 @@ async function renderBannerPendentes() {
   if (!banner) {
     banner = document.createElement('div');
     banner.id = '_banner_pendentes';
+    banner.setAttribute('role', 'alert');
+    banner.setAttribute('aria-live', 'assertive');
     banner.style.cssText = [
       'background:rgba(239,68,68,0.12)',
       'border-bottom:1px solid rgba(239,68,68,0.4)',
@@ -144,6 +149,7 @@ async function renderBannerPendentes() {
 
     const btn = document.createElement('button');
     btn.id = '_btn_reenviar';
+    btn.setAttribute('aria-label', 'Reenviar registros pendentes');
     btn.style.cssText = [
       'background:#e8b834','color:#0a0f1e',
       'border:none','border-radius:7px',

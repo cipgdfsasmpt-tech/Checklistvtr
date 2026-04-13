@@ -13,7 +13,6 @@ const ASSETS = [
   './descarga-4rodas.html',
   './descarga-2rodas.html',
   './manifest.json',
-  './config.js',
   './offline-queue.js',
   './theme.js',
   './icon-192.png',
@@ -51,9 +50,22 @@ self.addEventListener('fetch', e => {
       // Busca atualização em background (stale-while-revalidate)
       const fetchPromise = fetch(e.request).then(networkResponse => {
         if (networkResponse && networkResponse.status === 200) {
-          caches.open(CACHE).then(cache => {
-            cache.put(e.request, networkResponse.clone());
+          // ── Injetar headers de segurança nas respostas locais ────────────
+          // GitHub Pages não permite headers HTTP customizados — o SW supre
+          // X-Content-Type-Options e X-Frame-Options para recursos cacheados
+          const secHeaders = new Headers(networkResponse.headers);
+          secHeaders.set('X-Content-Type-Options', 'nosniff');
+          secHeaders.set('X-Frame-Options', 'DENY');
+          secHeaders.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+          const secResponse = new Response(networkResponse.clone().body, {
+            status:     networkResponse.status,
+            statusText: networkResponse.statusText,
+            headers:    secHeaders
           });
+          caches.open(CACHE).then(cache => {
+            cache.put(e.request, secResponse.clone());
+          });
+          return secResponse;
         }
         return networkResponse;
       }).catch(() => null);

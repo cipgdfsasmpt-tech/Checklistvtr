@@ -15,6 +15,11 @@ const ASSETS = [
   './manifest.json',
   './offline-queue.js',
   './theme.js',
+  './index-app.js',
+  './checklist-4r-app.js',
+  './checklist-2r-app.js',
+  './descarga-4r-app.js',
+  './descarga-2r-app.js',
   './icon-192.png',
   './icon-512.png'
 ];

@@ -1,6 +1,6 @@
-# CIPGd-FSA — Headers de segurança para Cloudflare Pages
-# Este arquivo configura todos os headers HTTP que o GitHub Pages não permite.
-# Resultado: score A+ no Mozilla Observatory.
+# CIPGd-FSA — Headers de segurança para Cloudflare Pages/Workers
+# Scripts inline extraídos para arquivos .js externos — unsafe-inline removido.
+# Resultado esperado: A+ no Mozilla Observatory.
 
 /*
   Strict-Transport-Security: max-age=63072000; includeSubDomains
@@ -8,7 +8,8 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
-  Content-Security-Policy: default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src https://script.google.com; manifest-src 'self'; worker-src 'self'
+  Cross-Origin-Resource-Policy: same-origin
+  Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src https://script.google.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; frame-ancestors 'none'
 
 /sw.js
   Cache-Control: public, max-age=0, must-revalidate

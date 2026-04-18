@@ -99,6 +99,14 @@
     return true;
   }
 
+
+  // iPhone: ao retornar do WhatsApp, redireciona para index
+  window.addEventListener('pageshow', function(e) {
+    if (e.persisted && isIphone) {
+      window.location.replace('./index.html');
+    }
+  });
+
   document.getElementById('btn-enviar').addEventListener('click', function() {
     if (!validarKm()) {
       kmInput.scrollIntoView({ behavior: 'smooth', block: 'center' });

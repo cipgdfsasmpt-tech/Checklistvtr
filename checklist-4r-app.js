@@ -124,6 +124,14 @@
   }
 
   // SUBMIT
+
+  // iPhone: ao retornar do WhatsApp, redireciona para index
+  window.addEventListener('pageshow', function(e) {
+    if (e.persisted && isIphone) {
+      window.location.replace('./index.html');
+    }
+  });
+
   document.getElementById('checklistForm').addEventListener('submit', function(e) {
     e.preventDefault();
     var dados = {};

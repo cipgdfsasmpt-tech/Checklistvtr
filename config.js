@@ -6,6 +6,6 @@
 const CIPGD_CONFIG = {
   VERSAO:    'v2.2',
   CACHE:     'cipgd-v2.2',
-  URL_4RODAS: 'https://script.google.com/macros/s/AKfycbxRDJp-Qdhxqnyb7EdkwqZsYexRkR0-cL3BuxuOcIvStoxyXJU2RvC5kqp4RJV-EvcSiw/exec',
-  URL_2RODAS: 'https://script.google.com/macros/s/AKfycbw4VMlBmo8fHrg8MTGcPDXmOAsqgOjBiyvbyTJk23lbvcuDKDAZqjkLNTupidrdjoXO4g/exec'
+  URL_4RODAS: 'https://script.google.com/macros/s/AKfycbxFBHYsN-Gfol3Ko9kLpXzwWQRKKUx8vmcdDmNKOD2AA1rJEdyF8JWu_uC2omR4yP6lRA/exec',
+  URL_2RODAS: 'https://script.google.com/macros/s/AKfycbzntiXrCAszKEIs07XIAUMebi-QOUerVdiO6QP_oc9RMLK7Wwy99WXycmyHmRZFeT7N/exec'
 };
